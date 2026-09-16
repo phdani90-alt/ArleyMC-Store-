@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArleyMC | Tienda Oficial</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#090b10;color:#fff}
+header{padding:18px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #20242d;background:#0d1017;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900}.logo span{color:#e33}
+nav a{color:#bbb;text-decoration:none;margin-left:20px;font-weight:700}nav a:hover{color:#fff}
+.hero{text-align:center;padding:75px 20px;background:radial-gradient(circle at center,#222936 0,#0b0e14 55%,#090b10 100%)}
+.hero h1{font-size:52px;margin:0 0 12px}.hero h1 span{color:#e33}.hero p{color:#b7bbc4;font-size:18px}
+.btn{display:inline-block;padding:13px 22px;border-radius:9px;background:#e33;color:#fff;text-decoration:none;font-weight:800;border:0;cursor:pointer}
+.container{max-width:1150px;margin:auto;padding:50px 20px}.title{text-align:center;margin-bottom:35px}.title h2{font-size:32px;margin:0 0 8px}.title p{color:#999}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px}
+.card{background:#11151d;border:1px solid #282d38;border-radius:15px;padding:25px;box-shadow:0 8px 30px #0005}.card h3{font-size:26px;margin:0 0 12px}.price{font-size:22px;font-weight:900;margin:8px 0}.perm{color:#ffd34d}.monthly{color:#8fc7ff}.ench{color:#bbb;line-height:1.6;margin:15px 0}.card .btn{width:100%;text-align:center}
+.badge{display:inline-block;background:#252b36;color:#aaa;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:12px}
+.coming{opacity:.72}.coming .badge{background:#3a2e12;color:#ffd34d}
+.pay{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}.pay div{background:#11151d;border:1px solid #282d38;padding:20px;border-radius:12px}
+.notice{text-align:center;margin-top:30px;padding:20px;border:1px solid #5c2d2d;background:#1b1012;border-radius:12px;color:#ddd}
+footer{text-align:center;padding:35px 20px;border-top:1px solid #20242d;color:#777}
+@media(max-width:650px){.hero h1{font-size:38px}nav{display:none}}
+
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:20;align-items:center;justify-content:center;padding:18px}
+.modal.show{display:flex}.modal-box{width:min(520px,100%);background:#11151d;border:1px solid #343b49;border-radius:18px;padding:25px;box-shadow:0 20px 70px #000}
+.modal-box h3{margin:0 0 8px;font-size:27px}.modal-box p{color:#aaa}.method{display:block;width:100%;margin:10px 0;padding:15px;background:#191e28;border:1px solid #303744;border-radius:10px;color:#fff;text-align:left;cursor:pointer;font-weight:800}
+.method:hover{border-color:#e33}.method small{display:block;color:#999;margin-top:5px;font-weight:400}
+.close{float:right;background:none;border:0;color:#aaa;font-size:25px;cursor:pointer}.payment-details{display:none;margin-top:14px;padding:15px;background:#0b0e14;border-radius:10px;color:#ddd}.payment-details input{width:100%;padding:12px;margin:7px 0;background:#171c25;border:1px solid #303744;border-radius:8px;color:#fff}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">⚔️ ARLEY<span>MC</span></div>
+  <nav><a href="#rangos">Rangos</a><a href="#proximamente">Próximamente</a><a href="#pagos">Pagos</a></nav>
+</header>
+
+<section class="hero">
+  <h1>🛒 Tienda Oficial de <span>ArleyMC</span></h1>
+  <p>Mejora tu experiencia en ArleyMC Factions y consigue beneficios exclusivos.</p>
+  <a class="btn" href="#rangos">Ver rangos</a>
+</section>
+
+<section class="container" id="rangos">
+  <div class="title"><h2>👑 Rangos de Paga</h2><p>Todos incluyen su Kit de Armadura exclusivo.</p></div>
+  <div class="grid">
+    <article class="card"><span class="badge">RANGO PREMIUM</span><h3>🟢 Hero</h3><div class="price monthly">$99 MXN / mes</div><div class="price perm">♾️ $249 MXN permanente</div><div class="ench">🪖 Protección XII<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('Hero')">Comprar</button></article>
+    <article class="card"><span class="badge">RANGO PREMIUM</span><h3>🔵 Titan</h3><div class="price monthly">$149 MXN / mes</div><div class="price perm">♾️ $349 MXN permanente</div><div class="ench">🪖 Protección XIII<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('Titan')">Comprar</button></article>
+    <article class="card"><span class="badge">RANGO PREMIUM</span><h3>🟣 Divine</h3><div class="price monthly">$199 MXN / mes</div><div class="price perm">♾️ $449 MXN permanente</div><div class="ench">🪖 Protección XIV<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('Divine')">Comprar</button></article>
+    <article class="card"><span class="badge">RANGO PREMIUM</span><h3>🟠 Legend</h3><div class="price monthly">$249 MXN / mes</div><div class="price perm">♾️ $599 MXN permanente</div><div class="ench">🪖 Protección XV<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('Legend')">Comprar</button></article>
+    <article class="card"><span class="badge">RANGO PREMIUM</span><h3>🔴 ArleyMC</h3><div class="price monthly">$299 MXN / mes</div><div class="price perm">♾️ $799 MXN permanente</div><div class="ench">🪖 Protección XVI<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('ArleyMC')">Comprar</button></article>
+    <article class="card"><span class="badge">RANGO EXCLUSIVO</span><h3>🟡 Supreme</h3><div class="price monthly">$399 MXN / mes</div><div class="price perm">♾️ $999 MXN permanente</div><div class="ench">🪖 Protección XVIII<br>🛡️ Irrompibilidad X<br>🔧 Reparación I</div><button class="btn" onclick="buy('Supreme')">Comprar</button></article>
+  </div>
+</section>
+
+<section class="container" id="proximamente">
+  <div class="title"><h2>🚀 Próximamente</h2><p>Nuevos productos estarán disponibles muy pronto.</p></div>
+  <div class="grid">
+    <article class="card">
+      <span class="badge">💊 DISPONIBLE</span>
+      <h3>💊 Drugs</h3>
+      <div class="ench">
+        🌿 Marihuana — <b>$49 MXN</b><br>
+        ❄️ Cocaína — <b>$69 MXN</b><br>
+        🍾 Alcohol — <b>$59 MXN</b><br>
+        🚬 Tabaco — <b>$39 MXN</b><br>
+        ☠️ Pentanilo — <b>$99 MXN</b><br><br>
+        📦 Pack Marihuana x5 — <b>$199 MXN</b><br>
+        📦 Pack Cocaína x5 — <b>$299 MXN</b><br>
+        📦 Pack Alcohol x5 — <b>$249 MXN</b><br>
+        📦 Pack Tabaco x5 — <b>$169 MXN</b><br>
+        📦 Pack Pentanilo x5 — <b>$399 MXN</b>
+      </div>
+      <button class="btn" onclick="buy('Drugs')">Comprar Drugs</button>
+    </article>
+    <article class="card coming">
+      <span class="badge">🔒 PRÓXIMAMENTE</span>
+      <h3>🔑 Keys</h3>
+      <p>Llaves y packs para conseguir recompensas exclusivas en ArleyMC.</p>
+    </article>
+  </div>
+</section>
+
+<section class="container">
+  <div class="title"><h2>🔥 Pack Completo</h2><p>La colección completa de Drugs de ArleyMC.</p></div>
+  <div class="grid">
+    <article class="card">
+      <span class="badge">💊 ARLEYMC DRUGS PACK</span>
+      <h3>💥 Pack Completo</h3>
+      <div class="price perm"><s>$475 MXN</s> → $399 MXN</div>
+      <div class="ench">Incluye las 5 Drugs: Marihuana, Cocaína, Alcohol, Tabaco y Pentanilo.</div>
+      <button class="btn" onclick="buy('ArleyMC Drugs Pack')">Comprar Pack</button>
+    </article>
+  </div>
+</section>
+
+<section class="container" id="pagos">
+  <div class="title"><h2>💳 Métodos de Pago</h2><p>Antes de realizar cualquier pago, confirma los datos oficiales.</p></div>
+  <div class="pay">
+    <div>💙 <b>PayPal</b><br><small>Pago disponible mediante ticket.</small></div>
+    <div>🟢 <b>Mercado Pago</b><br><small>Tarjeta o transferencia mediante Mercado Pago.</small></div>
+    <div>🏦 <b>Depósito / Transferencia</b><br><small>Usa los datos oficiales de abajo y conserva tu comprobante.</small></div>
+    <div>🎫 <b>Otro método</b><br><small>Abre un ticket para consultar.</small></div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <span class="badge">🏦 DATOS OFICIALES</span>
+    <h3>Mercado Pago</h3>
+    <div class="ench">
+      <b>CLABE:</b> 722969014716696786<br>
+      <b>Beneficiario:</b> Daniel Alejandro Tapia Diaz<br>
+      <b>Institución:</b> Mercado Pago W<br>
+      <b>Celular vinculado:</b> 81 2971 9163
+    </div>
+    <div class="notice" style="margin-top:10px">
+      ⚠️ Antes de transferir, confirma que los datos coincidan exactamente. Después envía tu comprobante por el ticket de compra.
+    </div>
+  </div>
+
+  <div class="notice">⚠️ No realices ningún pago sin antes confirmar que los datos mostrados son los oficiales de ArleyMC.</div>
+</section>
+
+<footer>⚔️ ARLEYMC FACTIONS · ¡Domina las Factions y demuestra quién manda! 🔥</footer>
+
+<script>
+function buy(rank){
+  alert("Has seleccionado el rango " + rank + ".\n\nLa compra automática se conectará cuando configuremos el sistema de pagos y la entrega dentro del servidor.");
+}
+</script>
+
+<div class="modal" id="paymentModal">
+  <div class="modal-box">
+    <button class="close" onclick="closePayment()">×</button>
+    <h3>🛒 Comprar en ArleyMC</h3>
+    <p id="selectedProduct">Producto seleccionado</p>
+
+    <button class="method" onclick="showMethod('mercado')">🟢 Mercado Pago
+      <small>Tarjeta, transferencia y métodos disponibles.</small>
+    </button>
+    <button class="method" onclick="showMethod('transfer')">🏦 Depósito / Transferencia
+      <small>Realiza el pago y envía tu comprobante para revisión.</small>
+    </button>
+
+    <div class="payment-details" id="mercado">
+      <b>🟢 Mercado Pago</b>
+      <p>Al conectar tu cuenta de Mercado Pago, aquí aparecerá el botón de pago.</p>
+      <button class="btn" style="width:100%" onclick="alert('Mercado Pago aún no está conectado. Primero hay que configurar las credenciales en el servidor.')">Continuar con Mercado Pago</button>
+    </div>
+
+    <div class="payment-details" id="transfer">
+      <b>🏦 Datos para transferencia / depósito</b>
+      <p>Estos datos los colocarás tú cuando la tienda esté publicada:</p>
+      <p><b>Banco:</b> TU BANCO</p>
+      <p><b>Titular:</b> Daniel Alejandro Tapia Diaz</p>
+      <p><b>CLABE:</b> 722969014716696786 </p>
+      <p>⚠️ No publiques datos de tarjeta, CVV ni contraseñas.</p>
+      <input id="mcNick" placeholder="Tu Nick de Minecraft">
+      <input id="buyerDiscord" placeholder="Tu usuario de Discord">
+      <button class="btn" style="width:100%" onclick="sendReceipt()">🎫 Enviar comprobante / Abrir ticket</button>
+    </div>
+  </div>
+</div>
+<script>
+let currentProduct='';
+function buy(product){currentProduct=product;document.getElementById('selectedProduct').textContent='Producto: '+product;document.getElementById('paymentModal').classList.add('show')}
+function closePayment(){document.getElementById('paymentModal').classList.remove('show')}
+function showMethod(id){document.querySelectorAll('.payment-details').forEach(x=>x.style.display='none');document.getElementById(id).style.display='block'}
+function sendReceipt(){
+  const nick=document.getElementById('mcNick').value.trim();
+  const discord=document.getElementById('buyerDiscord').value.trim();
+  if(!nick||!discord){alert('Escribe tu Nick de Minecraft y usuario de Discord.');return}
+  alert('Compra registrada para '+nick+'. Aquí conectaremos tu ticket de Discord para enviar el comprobante y que Administración revise el pago.');
+}
+</script>
+</body>
+</html>

@@ -26,7 +26,7 @@ footer{text-align:center;padding:35px 20px;border-top:1px solid #20242d;color:#7
 .modal.show{display:flex}.modal-box{width:min(520px,100%);background:#11151d;border:1px solid #343b49;border-radius:18px;padding:25px;box-shadow:0 20px 70px #000}
 .modal-box h3{margin:0 0 8px;font-size:27px}.modal-box p{color:#aaa}.method{display:block;width:100%;margin:10px 0;padding:15px;background:#191e28;border:1px solid #303744;border-radius:10px;color:#fff;text-align:left;cursor:pointer;font-weight:800}
 .method:hover{border-color:#e33}.method small{display:block;color:#999;margin-top:5px;font-weight:400}
-.close{float:right;background:none;border:0;color:#aaa;font-size:25px;cursor:pointer}.payment-details{display:none;margin-top:14px;padding:15px;background:#0b0e14;border-radius:10px;color:#ddd}.payment-details input{width:100%;padding:12px;margin:7px 0;background:#171c25;border:1px solid #303744;border-radius:8px;color:#fff}
+.close{float:right;background:none;border:0;color:#aaa;font-size:25px;cursor:pointer}.payment-details{display:none;margin-top:14px;padding:15px;background:#0b0e14;border-radius:10px;color:#ddd}.payment-details input{width:100%;padding:12px;margin:7px 0;background:#171c25;border:1px solid #303744;border-radius:8px;color:#fff}.checkout-form{margin-top:15px}.checkout-form label{display:block;font-size:13px;color:#aaa;margin:10px 0 4px}.checkout-form select,.checkout-form input{width:100%;padding:12px;margin:0;background:#171c25;border:1px solid #303744;border-radius:8px;color:#fff}.checkout-note{font-size:12px;color:#888;line-height:1.5}.product-options{display:grid;gap:8px;margin-top:12px}.product-option{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#191e28;border:1px solid #303744;border-radius:10px;color:#fff;cursor:pointer}.product-option:hover{border-color:#e33}.product-option span:last-child{font-weight:900;color:#ffd34d}
 </style>
 </head>
 <body>
@@ -122,55 +122,104 @@ footer{text-align:center;padding:35px 20px;border-top:1px solid #20242d;color:#7
 
 <footer>⚔️ ARLEYMC FACTIONS · ¡Domina las Factions y demuestra quién manda! 🔥</footer>
 
-<script>
-function buy(rank){
-  alert("Has seleccionado el rango " + rank + ".\n\nLa compra automática se conectará cuando configuremos el sistema de pagos y la entrega dentro del servidor.");
-}
-</script>
-
 <div class="modal" id="paymentModal">
   <div class="modal-box">
     <button class="close" onclick="closePayment()">×</button>
     <h3>🛒 Comprar en ArleyMC</h3>
-    <p id="selectedProduct">Producto seleccionado</p>
+    <p id="selectedProduct">Selecciona un producto.</p>
 
-    <button class="method" onclick="showMethod('mercado')">🟢 Mercado Pago
-      <small>Tarjeta, transferencia y métodos disponibles.</small>
-    </button>
-    <button class="method" onclick="showMethod('transfer')">🏦 Depósito / Transferencia
-      <small>Realiza el pago y envía tu comprobante para revisión.</small>
-    </button>
+    <div id="productChoices" class="product-options"></div>
 
-    <div class="payment-details" id="mercado">
-      <b>🟢 Mercado Pago</b>
-      <p>Al conectar tu cuenta de Mercado Pago, aquí aparecerá el botón de pago.</p>
-      <button class="btn" style="width:100%" onclick="alert('Mercado Pago aún no está conectado. Primero hay que configurar las credenciales en el servidor.')">Continuar con Mercado Pago</button>
+    <div class="checkout-form" id="buyerForm" style="display:none">
+      <label>Nick de Minecraft</label>
+      <input id="mcNick" maxlength="32" placeholder="Ej. Knoss1155" autocomplete="off">
+      <label>Discord</label>
+      <input id="buyerDiscord" maxlength="80" placeholder="Ej. dani123" autocomplete="off">
+      <label>Correo electrónico</label>
+      <input id="buyerEmail" type="email" maxlength="120" placeholder="Ej. tu@email.com" autocomplete="email">
+      <p class="checkout-note">Tus datos se usan para identificar la compra. El pago se realiza dentro de Mercado Pago. El rango o producto no se entrega automáticamente: Administración revisará el pago primero.</p>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="startMercadoPago()">🟢 Continuar con Mercado Pago</button>
+      <button class="method" style="margin-top:8px" onclick="showTransfer()">🏦 Pagar por transferencia / depósito
+        <small>Conserva el comprobante y envíalo por ticket para revisión manual.</small>
+      </button>
     </div>
 
     <div class="payment-details" id="transfer">
       <b>🏦 Datos para transferencia / depósito</b>
-      <p>Estos datos los colocarás tú cuando la tienda esté publicada:</p>
-      <p><b>Banco:</b> TU BANCO</p>
+      <p><b>Institución:</b> Mercado Pago W</p>
       <p><b>Titular:</b> Daniel Alejandro Tapia Diaz</p>
-      <p><b>CLABE:</b> 722969014716696786 </p>
-      <p>⚠️ No publiques datos de tarjeta, CVV ni contraseñas.</p>
-      <input id="mcNick" placeholder="Tu Nick de Minecraft">
-      <input id="buyerDiscord" placeholder="Tu usuario de Discord">
-      <button class="btn" style="width:100%" onclick="sendReceipt()">🎫 Enviar comprobante / Abrir ticket</button>
+      <p><b>CLABE:</b> 722969014716696786</p>
+      <p>⚠️ Confirma los datos antes de transferir y envía el comprobante por tu ticket de Discord.</p>
     </div>
+
+    <div class="payment-details" id="paymentStatus"></div>
   </div>
 </div>
 <script>
-let currentProduct='';
-function buy(product){currentProduct=product;document.getElementById('selectedProduct').textContent='Producto: '+product;document.getElementById('paymentModal').classList.add('show')}
+const PRODUCTS={
+  hero_monthly:{label:'Hero · Mensual',price:99}, hero_perm:{label:'Hero · Permanente',price:249},
+  titan_monthly:{label:'Titan · Mensual',price:149}, titan_perm:{label:'Titan · Permanente',price:349},
+  divine_monthly:{label:'Divine · Mensual',price:199}, divine_perm:{label:'Divine · Permanente',price:449},
+  legend_monthly:{label:'Legend · Mensual',price:249}, legend_perm:{label:'Legend · Permanente',price:599},
+  arleymc_monthly:{label:'ArleyMC · Mensual',price:299}, arleymc_perm:{label:'ArleyMC · Permanente',price:799},
+  supreme_monthly:{label:'Supreme · Mensual',price:399}, supreme_perm:{label:'Supreme · Permanente',price:999},
+  marihuana:{label:'Marihuana',price:49}, cocaine:{label:'Cocaína',price:69}, alcohol:{label:'Alcohol',price:59},
+  tabaco:{label:'Tabaco',price:39}, pentanilo:{label:'Pentanilo',price:99},
+  marihuana_x5:{label:'Pack Marihuana x5',price:199}, cocaine_x5:{label:'Pack Cocaína x5',price:299},
+  alcohol_x5:{label:'Pack Alcohol x5',price:249}, tabaco_x5:{label:'Pack Tabaco x5',price:169},
+  pentanilo_x5:{label:'Pack Pentanilo x5',price:399}, drugs_pack:{label:'ArleyMC Drugs Pack',price:399}
+};
+const RANK_OPTIONS={
+  Hero:['hero_monthly','hero_perm'],Titan:['titan_monthly','titan_perm'],Divine:['divine_monthly','divine_perm'],
+  Legend:['legend_monthly','legend_perm'],ArleyMC:['arleymc_monthly','arleymc_perm'],Supreme:['supreme_monthly','supreme_perm']
+};
+let currentKey=null;
+function buy(product){
+  currentKey=null;
+  document.getElementById('selectedProduct').textContent='Selecciona la modalidad o producto que deseas comprar.';
+  const box=document.getElementById('productChoices'); box.innerHTML='';
+  if(product==='Drugs'){
+    ['marihuana','cocaine','alcohol','tabaco','pentanilo','marihuana_x5','cocaine_x5','alcohol_x5','tabaco_x5','pentanilo_x5','drugs_pack'].forEach(addOption);
+  } else if(RANK_OPTIONS[product]){
+    RANK_OPTIONS[product].forEach(addOption);
+  } else if(PRODUCTS[product]){
+    addOption(product);
+  }
+  document.getElementById('buyerForm').style.display='none';
+  document.getElementById('transfer').style.display='none';
+  document.getElementById('paymentStatus').style.display='none';
+  document.getElementById('paymentModal').classList.add('show');
+}
+function addOption(key){
+  const p=PRODUCTS[key]; const b=document.createElement('button'); b.className='product-option'; b.type='button';
+  b.innerHTML='<span>'+escapeHtml(p.label)+'</span><span>$'+p.price+' MXN</span>'; b.onclick=()=>selectProduct(key); document.getElementById('productChoices').appendChild(b);
+}
+function selectProduct(key){
+  currentKey=key; const p=PRODUCTS[key];
+  document.getElementById('selectedProduct').textContent='Producto: '+p.label+' · $'+p.price+' MXN';
+  document.getElementById('productChoices').innerHTML='';
+  document.getElementById('buyerForm').style.display='block';
+  document.getElementById('transfer').style.display='none';
+}
+function showTransfer(){document.getElementById('transfer').style.display='block'}
 function closePayment(){document.getElementById('paymentModal').classList.remove('show')}
-function showMethod(id){document.querySelectorAll('.payment-details').forEach(x=>x.style.display='none');document.getElementById(id).style.display='block'}
-function sendReceipt(){
+function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+async function startMercadoPago(){
+  if(!currentKey){alert('Selecciona un producto.');return}
   const nick=document.getElementById('mcNick').value.trim();
   const discord=document.getElementById('buyerDiscord').value.trim();
-  if(!nick||!discord){alert('Escribe tu Nick de Minecraft y usuario de Discord.');return}
-  alert('Compra registrada para '+nick+'. Aquí conectaremos tu ticket de Discord para enviar el comprobante y que Administración revise el pago.');
+  const email=document.getElementById('buyerEmail').value.trim();
+  if(!nick||!discord||!email){alert('Completa Nick de Minecraft, Discord y correo electrónico.');return}
+  if(nick.length>32||discord.length>80||email.length>120){alert('Revisa los datos ingresados.');return}
+  const btn=document.querySelector('#buyerForm .btn'); btn.disabled=true; btn.textContent='Creando pago...';
+  try{
+    const r=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:currentKey,nick,discord,email})});
+    const data=await r.json();
+    if(!r.ok||!data.checkout_url) throw new Error(data.error||'No se pudo crear el pago.');
+    window.location.href=data.checkout_url;
+  }catch(e){alert(e.message);btn.disabled=false;btn.textContent='🟢 Continuar con Mercado Pago'}
 }
+window.addEventListener('click',e=>{if(e.target===document.getElementById('paymentModal'))closePayment()});
 </script>
 </body>
 </html>
